@@ -5,7 +5,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { getOrmConfig } from './config/orm.config';
 import { APP_GUARD } from '@nestjs/core';
-import { JwtAuthGuard } from './auth/infrastructure/guards/jwt-auth.guard';
+import { JwtAuthGuard } from './shared/guards/jwt-auth.guard';
 
 @Module({
   imports: [

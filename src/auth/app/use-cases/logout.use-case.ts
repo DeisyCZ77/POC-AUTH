@@ -12,7 +12,10 @@ export class LogoutUseCase {
     ) { }
 
     async execute(rawToken: string) {
-        if (!rawToken) return;
+        if (!rawToken) {
+    console.log('❌ Logout - No token provided');
+    return;
+  }
         const payload = await this.tokens.verifyRefreshToken(rawToken).catch(() => null);
         if (!payload) return;
 

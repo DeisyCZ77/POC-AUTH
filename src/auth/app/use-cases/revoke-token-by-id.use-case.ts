@@ -1,14 +1,14 @@
-import { Inject, Injectable } from "@nestjs/common";
+import { Injectable, Inject } from "@nestjs/common";
 import { RefreshTokenRepository } from "src/auth/infrastructure/repositories/refresh-token.repository";
 
 @Injectable()
-export class CleanupExpiredTokensUseCase {
+export class RevokeTokenByIdUseCase {
     constructor(
         @Inject('IRefreshTokenRepository')
         private refreshRepo: RefreshTokenRepository
     ) { }
 
-    async execute() {
-        return this.refreshRepo.cleanupExpired();
+    async execute(tokenId: string, userId: string) {
+        return this.refreshRepo.revokeTokenById(tokenId, userId);
     }
 }

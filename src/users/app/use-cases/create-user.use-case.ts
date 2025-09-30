@@ -1,6 +1,6 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { RegisterUserDto } from "src/auth/app/dto/register.dto";
-import { UserRepository } from "src/users/infrastructure/repository/user.repository";
+import { RegisterUserDto } from "src/users/app/dto/register.dto";
+import { UserRepository } from "src/users/infrastructure/user.repository";
 const bcrypt = require('bcrypt');
 
 @Injectable()

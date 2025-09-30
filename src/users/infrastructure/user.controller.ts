@@ -10,9 +10,9 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { CreateUserUseCase } from '../app/use-cases/create-user.use-case';
-import { RegisterUserDto } from 'src/auth/app/dto/register.dto';
+import { RegisterUserDto } from 'src/users/app/dto/register.dto';
 import { FindUserByIdUseCase } from '../app/use-cases/find-by-id.use-case';
-import { JwtAuthGuard } from 'src/auth/infrastructure/guards/jwt-auth.guard';
+import { JwtAuthGuard } from 'src/shared/guards/jwt-auth.guard';
 
 @Controller('users')
 export class UserController {

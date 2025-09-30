@@ -6,7 +6,7 @@ import {
   UpdateDateColumn,
   Index,
 } from 'typeorm';
-import { User } from '../../domain/user.model';
+import { User } from '../domain/user.model';
 
 @Entity('users')
 export class UserEntity implements User {

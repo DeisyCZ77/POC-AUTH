@@ -4,7 +4,7 @@ import cookieParser from 'cookie-parser';
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { JwtAuthGuard } from './auth/infrastructure/guards/jwt-auth.guard';
+import { JwtAuthGuard } from './shared/guards/jwt-auth.guard';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -33,7 +33,12 @@ async function bootstrap() {
   console.log('   POST /auth/login');
   console.log('   POST /auth/refresh');
   console.log('   POST /auth/logout');
+  console.log('   POST /auth/logout-all');
+  console.log('   POST /auth/revoke-all');
+  console.log('   DELETE /auth/revoke/:id');
+
   console.log('   GET  /auth/me');
   console.log('   GET  /auth/sessions');
+  console.log('   DELETE /auth/sessions/:sessionId');
 }
 bootstrap();

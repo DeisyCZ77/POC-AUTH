@@ -6,15 +6,17 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import { AuthController } from './infrastructure/auth.controller';
 import { RefreshTokenEntity } from './infrastructure/entities/refresh-token.entity';
 import { UsersModule } from '../users/users.module';
-import { JwtAuthGuard } from './infrastructure/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../shared/guards/jwt-auth.guard';
 import { LoginUseCase } from './app/use-cases/login.use-case';
-import { CleanupTokensUseCase } from './app/use-cases/cleanup-tokens.use-case';
-import { RevokeAllUserTokens } from './app/use-cases/revoke-tokens.use-case';
+import { CleanupExpiredTokensUseCase } from './app/use-cases/cleanup-tokens.use-case';
 import { RefreshTokenUseCase } from './app/use-cases/refresh-token.use-case';
 import { LogoutUseCase } from './app/use-cases/logout.use-case';
 import { RefreshTokenRepository } from './infrastructure/repositories/refresh-token.repository';
 import { TokenFactory } from './infrastructure/external-services/token-factory.service';
-import { JwtStrategy } from './infrastructure/strategies/jwt.strategy';
+import { JwtStrategy } from '../shared/strategies/jwt.strategy';
+import { RevokeAllUserTokensUseCase } from './app/use-cases/revoke-all-user-tokens.use-case copy';
+import { RevokeTokenByIdUseCase } from './app/use-cases/revoke-token-by-id.use-case';
+import { GetUserActiveSessionsUseCase } from './app/use-cases/get-user-active-sessions.use-case';
 
 @Module({
   imports: [
@@ -50,8 +52,10 @@ import { JwtStrategy } from './infrastructure/strategies/jwt.strategy';
     LoginUseCase,
     LogoutUseCase,
     RefreshTokenUseCase,
-    CleanupTokensUseCase,
-    RevokeAllUserTokens,
+    CleanupExpiredTokensUseCase,
+    RevokeAllUserTokensUseCase,
+    RevokeTokenByIdUseCase,
+    GetUserActiveSessionsUseCase,
   ],
   controllers: [AuthController],
   exports: [JwtAuthGuard],

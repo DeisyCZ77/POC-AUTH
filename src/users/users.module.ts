@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { FindUserByEmailUseCase } from './app/use-cases/find-by-email.use-case';
 import { FindUserByIdUseCase } from './app/use-cases/find-by-id.use-case';
-import { UserRepository } from './infrastructure/repository/user.repository';
-import { UserEntity } from './infrastructure/entities/user.entity';
+import { UserRepository } from './infrastructure/user.repository';
+import { UserEntity } from './infrastructure/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CreateUserUseCase } from './app/use-cases/create-user.use-case';
 import { UserController } from './infrastructure/user.controller';
