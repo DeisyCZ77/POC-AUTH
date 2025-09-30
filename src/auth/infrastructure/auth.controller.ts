@@ -95,7 +95,7 @@ export class AuthController {
 
     // ✅ Limpiar cookie
     res.clearCookie('refreshToken', {
-      path: '/auth',
+      path: '/',
       httpOnly: true,
       secure: process.env.COOKIE_SECURE === 'true',
       sameSite: 'lax',
@@ -116,7 +116,7 @@ export class AuthController {
       httpOnly: true,
       secure: process.env.COOKIE_SECURE === 'true',
       sameSite: 'lax',
-      path: '/auth',
+      path: '/',
       maxAge: getRefreshTtlMs(this.config),
     });
   }
