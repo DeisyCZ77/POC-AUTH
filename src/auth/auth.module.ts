@@ -1,63 +1,40 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { ThrottlerModule } from '@nestjs/throttler';
-import { AuthController } from './infrastructure/auth.controller';
-import { RefreshTokenEntity } from './infrastructure/entities/refresh-token.entity';
-import { UsersModule } from '../users/users.module';
-import { JwtAuthGuard } from '../shared/guards/jwt-auth.guard';
-import { LoginUseCase } from './app/use-cases/login.use-case';
-import { CleanupExpiredTokensUseCase } from './app/use-cases/cleanup-tokens.use-case';
-import { RefreshTokenUseCase } from './app/use-cases/refresh-token.use-case';
-import { LogoutUseCase } from './app/use-cases/logout.use-case';
-import { RefreshTokenRepository } from './infrastructure/repositories/refresh-token.repository';
-import { TokenFactory } from './infrastructure/external-services/token-factory.service';
-import { JwtStrategy } from '../shared/strategies/jwt.strategy';
-import { RevokeAllUserTokensUseCase } from './app/use-cases/revoke-all-user-tokens.use-case copy';
-import { RevokeTokenByIdUseCase } from './app/use-cases/revoke-token-by-id.use-case';
-import { GetUserActiveSessionsUseCase } from './app/use-cases/get-user-active-sessions.use-case';
+import { AuthService } from './auth.service';
+import { AuthController } from './auth.controller';
+import { User } from './entities/user.entity';
+import { RefreshToken } from './entities/refresh-token.entity';
+import { JwtStrategy } from './strategies/jwt.strategy';
+import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
+import { ScheduleModule } from '@nestjs/schedule';
+import { TokenCleanupTask } from './tasks/cleanup.task';
 
 @Module({
   imports: [
-    RefreshTokenEntity,
-    ConfigModule.forRoot({ isGlobal: true }),
+    TypeOrmModule.forFeature([User, RefreshToken]),
+    PassportModule,
+    ScheduleModule.forRoot(),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        secret: configService.get<string>('JWT_SECRET') || 'default_secret',
-        signOptions: { expiresIn: '1h' },
+      useFactory: (config: ConfigService) => ({
+        secret: config.get<string>('JWT_SECRET'),
+        signOptions: {
+          expiresIn: config.get<string>('JWT_EXPIRES_IN', '15m'),
+        },
       }),
     }),
-    TypeOrmModule.forFeature([RefreshTokenEntity]),
-    ThrottlerModule.forRoot([{
-      ttl: 60000,
-      limit: 10,
-    }]),
-    UsersModule,
-  ],
-  providers: [
-    {
-      provide: 'IRefreshTokenRepository',
-      useClass: RefreshTokenRepository,
-    },
-
-    JwtStrategy,
-    JwtAuthGuard,
-    ConfigService,
-    TokenFactory,
-
-    // Use Cases
-    LoginUseCase,
-    LogoutUseCase,
-    RefreshTokenUseCase,
-    CleanupExpiredTokensUseCase,
-    RevokeAllUserTokensUseCase,
-    RevokeTokenByIdUseCase,
-    GetUserActiveSessionsUseCase,
   ],
   controllers: [AuthController],
-  exports: [JwtAuthGuard],
+  providers: [
+    AuthService,
+    JwtStrategy,
+    JwtRefreshStrategy,
+    TokenCleanupTask,
+  ],
+  exports: [AuthService],
 })
-export class AuthModule { }
+export class AuthModule {}

@@ -1,98 +1,325 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# NestJS Authentication with JWT & Refresh Tokens
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Sistema de autenticación completo con las mejores prácticas usando NestJS, TypeORM, PostgreSQL, JWT y Passport.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 🚀 Características
 
-## Description
+- ✅ Autenticación con JWT (Access & Refresh Tokens)
+- ✅ Refresh tokens almacenados en cookies HttpOnly
+- ✅ Estrategias Passport (Local, JWT, JWT-Refresh)
+- ✅ Gestión de sesiones múltiples
+- ✅ Revocación de tokens
+- ✅ Sistema de roles y permisos
+- ✅ Rate limiting
+- ✅ Seguridad con Helmet
+- ✅ Validación de datos con class-validator
+- ✅ TypeORM con PostgreSQL
+- ✅ Hash de contraseñas con bcrypt
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## 📋 Requisitos Previos
 
-## Project setup
+- Node.js >= 18
+- PostgreSQL >= 14
+- npm o yarn
 
-```bash
-$ npm install
-```
+## 🔧 Instalación
 
-## Compile and run the project
+### 1. Clonar e instalar dependencias
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+npm install
 ```
 
-## Run tests
+### 2. Configurar base de datos
+
+Iniciar PostgreSQL con Docker:
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+docker-compose up -d
 ```
 
-## Deployment
+O configurar PostgreSQL manualmente y crear la base de datos:
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+```sql
+CREATE DATABASE auth_db;
+```
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+### 3. Configurar variables de entorno
+
+Copiar `.env.example` a `.env` y configurar:
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+cp .env.example .env
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+**IMPORTANTE**: Cambiar los secrets en producción:
 
-## Resources
+```env
+JWT_SECRET=tu-secret-super-seguro-aqui
+JWT_REFRESH_SECRET=tu-refresh-secret-super-seguro-aqui
+```
 
-Check out a few resources that may come in handy when working with NestJS:
+### 4. Ejecutar migraciones (opcional)
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+Si usas migraciones en lugar de `synchronize`:
 
-## Support
+```bash
+npm run migration:generate -- src/migrations/InitialMigration
+npm run migration:run
+```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+### 5. Iniciar la aplicación
 
-## Stay in touch
+```bash
+# Desarrollo
+npm run start:dev
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+# Producción
+npm run build
+npm run start:prod
+```
 
-## License
+## 📚 Estructura del Proyecto
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+```
+src/
+├── auth/
+│   ├── decorators/
+│   │   ├── current-user.decorator.ts
+│   │   ├── public.decorator.ts
+│   │   └── roles.decorator.ts
+│   ├── dto/
+│   │   ├── login.dto.ts
+│   │   └── register.dto.ts
+│   ├── entities/
+│   │   ├── user.entity.ts
+│   │   └── refresh-token.entity.ts
+│   ├── guards/
+│   │   ├── jwt-auth.guard.ts
+│   │   ├── jwt-refresh.guard.ts
+│   │   ├── local-auth.guard.ts
+│   │   └── roles.guard.ts
+│   ├── strategies/
+│   │   ├── jwt.strategy.ts
+│   │   ├── jwt-refresh.strategy.ts
+│   │   └── local.strategy.ts
+│   ├── auth.controller.ts
+│   ├── auth.service.ts
+│   └── auth.module.ts
+├── config/
+│   └── typeorm.config.ts
+├── app.module.ts
+└── main.ts
+```
+
+## 🔐 API Endpoints
+
+### Autenticación
+
+#### POST `/api/auth/register`
+Registrar nuevo usuario
+
+```json
+{
+  "email": "user@example.com",
+  "password": "securePassword123",
+  "firstName": "John",
+  "lastName": "Doe"
+}
+```
+
+#### POST `/api/auth/login`
+Iniciar sesión (retorna access token y establece refresh token en cookie)
+
+```json
+{
+  "email": "user@example.com",
+  "password": "securePassword123"
+}
+```
+
+Respuesta:
+```json
+{
+  "user": {
+    "id": "uuid",
+    "email": "user@example.com",
+    "firstName": "John",
+    "lastName": "Doe",
+    "roles": ["user"]
+  },
+  "accessToken": "eyJhbGciOiJIUzI1NiIs..."
+}
+```
+
+#### POST `/api/auth/refresh`
+Renovar access token usando refresh token (cookie)
+
+```bash
+# Incluir cookie en la petición
+Cookie: refresh_token=eyJhbGciOiJIUzI1NiIs...
+```
+
+#### POST `/api/auth/logout`
+Cerrar sesión (requiere autenticación)
+
+```bash
+Authorization: Bearer <access_token>
+```
+
+#### POST `/api/auth/logout-all`
+Cerrar todas las sesiones (requiere autenticación)
+
+#### GET `/api/auth/me`
+Obtener perfil del usuario actual (requiere autenticación)
+
+### Endpoints Protegidos (Ejemplo)
+
+```typescript
+// Público (sin autenticación)
+@Public()
+@Get('public')
+getPublicData() {}
+
+// Requiere autenticación
+@Get('profile')
+getProfile(@CurrentUser() user: User) {}
+
+// Solo administradores
+@Roles('admin')
+@Get('admin')
+adminOnly() {}
+
+// Admin o moderador
+@Roles('admin', 'moderator')
+@Delete(':id')
+deleteUser() {}
+```
+
+## 🛡️ Seguridad
+
+### Cookies HttpOnly
+
+Los refresh tokens se almacenan en cookies HttpOnly para prevenir ataques XSS:
+
+```typescript
+res.cookie('refresh_token', token, {
+  httpOnly: true,        // No accesible por JavaScript
+  secure: true,          // Solo HTTPS en producción
+  sameSite: 'strict',    // Protección CSRF
+  maxAge: 7 * 24 * 60 * 60 * 1000  // 7 días
+});
+```
+
+### Hash de Contraseñas
+
+Usamos bcrypt con 12 rounds de salt:
+
+```typescript
+const hashedPassword = await bcrypt.hash(password, 12);
+```
+
+### Tokens JWT
+
+- **Access Token**: Corta duración (5 minutos)
+- **Refresh Token**: Larga duración (1 día)
+- Almacenados en diferentes secrets
+- Refresh tokens revocables en BD
+
+### Rate Limiting
+
+Protección contra ataques de fuerza bruta:
+
+```typescript
+// Login: 5 intentos por minuto
+@Throttle({ default: { limit: 5, ttl: 60000 } })
+@Post('login')
+
+// Global: 10 requests por minuto
+ThrottlerModule.forRoot({
+  throttlers: [{ ttl: 60000, limit: 10 }]
+})
+```
+
+## 🔄 Flujo de Autenticación
+
+1. **Registro/Login**: Usuario recibe access token + refresh token (cookie)
+2. **Requests**: Cliente envía access token en header `Authorization: Bearer <token>`
+3. **Expiración**: Cuando access token expira (5 min), usar refresh token
+4. **Refresh**: POST a `/auth/refresh` con cookie → nuevo access token
+5. **Logout**: Revoca refresh token en BD
+
+## 🧪 Testing con cURL
+
+```bash
+# Registro
+curl -X POST http://localhost:3000/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"email":"test@test.com","password":"password123"}'
+
+# Login
+curl -X POST http://localhost:3000/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"test@test.com","password":"password123"}' \
+  -c cookies.txt
+
+# Perfil (con access token)
+curl http://localhost:3000/api/auth/me \
+  -H "Authorization: Bearer <access_token>"
+
+# Refresh (con cookie)
+curl -X POST http://localhost:3000/api/auth/refresh \
+  -b cookies.txt
+```
+
+## 📦 Dependencias Principales
+
+```json
+{
+  "@nestjs/jwt": "JWT support",
+  "@nestjs/passport": "Passport integration",
+  "@nestjs/typeorm": "TypeORM integration",
+  "bcrypt": "Password hashing",
+  "passport-jwt": "JWT strategy",
+  "passport-local": "Local strategy",
+  "cookie-parser": "Cookie parsing",
+  "helmet": "Security headers",
+  "class-validator": "DTO validation"
+}
+```
+
+## 🤝 Mejores Prácticas Implementadas
+
+1. ✅ Separación de access y refresh tokens
+2. ✅ Refresh tokens en HttpOnly cookies
+3. ✅ Revocación de tokens en base de datos
+4. ✅ Límite de sesiones activas por usuario (5)
+5. ✅ Limpieza automática de tokens expirados
+6. ✅ Rate limiting por endpoint
+7. ✅ Validación de DTOs
+8. ✅ Guards globales y específicos
+9. ✅ Decoradores personalizados
+10. ✅ Sistema de roles flexible
+
+## 📝 Notas Adicionales
+
+### Rotación de Refresh Tokens
+
+Cada vez que se usa un refresh token, se genera uno nuevo y el anterior se revoca (patrón de rotación).
+
+### Manejo de Múltiples Dispositivos
+
+El sistema soporta múltiples sesiones activas por usuario. Se guarda información de:
+- User Agent
+- IP Address
+- Fecha de creación
+
+### Two-Factor Authentication (preparado)
+
+Las entidades ya incluyen campos para 2FA:
+- `twoFactorSecret`
+- `twoFactorEnabled`
+
+## 📄 Licencia
+
+MIT

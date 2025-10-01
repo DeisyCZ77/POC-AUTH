@@ -1,16 +1,23 @@
-import { NestFactory, Reflector } from '@nestjs/core';
-import { AppModule } from './app.module';
-import cookieParser from 'cookie-parser';
+// src/main.ts
+import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { JwtService } from '@nestjs/jwt';
-import { JwtAuthGuard } from './shared/guards/jwt-auth.guard';
+import cookieParser from 'cookie-parser';
+import helmet from 'helmet';
+import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // app.use(helmet());
+  const config = app.get(ConfigService);
+
+  app.use(helmet());
   app.use(cookieParser());
+
+  app.enableCors({
+    origin: config.get('CORS_ORIGIN', 'http://localhost:3000'),
+    credentials: true,
+  });
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -20,25 +27,12 @@ async function bootstrap() {
     }),
   );
 
-  app.enableCors({
-    origin: process.env.CORS_ORIGIN || 'http://localhost:3001',
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-  });
+  app.setGlobalPrefix('api');
 
-  await app.listen(3000);
-  console.log('🚀 Server listening on http://localhost:3000');
-  console.log('📝 Auth endpoints:');
-  console.log('   POST /auth/login');
-  console.log('   POST /auth/refresh');
-  console.log('   POST /auth/logout');
-  console.log('   POST /auth/logout-all');
-  console.log('   POST /auth/revoke-all');
-  console.log('   DELETE /auth/revoke/:id');
+  const port = config.get('PORT', 3000);
+  await app.listen(port);
 
-  console.log('   GET  /auth/me');
-  console.log('   GET  /auth/sessions');
-  console.log('   DELETE /auth/sessions/:sessionId');
+  console.log(`\n http://localhost:${port}/api`);
 }
+
 bootstrap();
